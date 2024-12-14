@@ -4,6 +4,7 @@
   "invalid_id": "رقم تعريفي خاطئ",
   "validation_field": "الحقل مطلوب",
   "validation_value": "قيمة خاطئة",
+  "validation_user_check": "المستخدم موجود بالفعل",
   "validation_email_check": "البريد الإلكتروني موجود بالفعل",
   "validation_length_short": "الطول بتراوح بين 10, 50 حرف",
   "validation_length_medium": "الطول بتراوح بين 10, 150 حرف",

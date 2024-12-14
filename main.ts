@@ -1,21 +1,26 @@
 import express from "express";
 import { Server } from "http";
 import dbConnection from "./src/config/database";
+import hpp from "hpp";
 import path from "path";
 import dotenv from "dotenv";
-import i18n from 'i18n';
+import i18n from "i18n";
 
 import mountRoutes from "./src";
 const app: express.Application = express();
 app.use(express.json({ limit: "10kb" }));
-let server: Server;
+app.use(express.static('uploads'))
+// hpp()                         // one result
+// hpp({whitelist:['','']})     // more result
+app.use(hpp({ whitelist: ["name"]}));
 
+let server: Server;
 dotenv.config();
 i18n.configure({
-  locales: ['en', 'ar'],
-  directory: path.join(__dirname, 'locales'),
-  defaultLocale: 'en',
-  queryParameter: 'lang'
+  locales: ["en", "ar"],
+  directory: path.join(__dirname, "locales"),
+  defaultLocale: "en",
+  queryParameter: "lang",
 });
 app.use(i18n.init);
 

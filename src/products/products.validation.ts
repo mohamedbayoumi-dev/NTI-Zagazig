@@ -34,7 +34,7 @@ class ProductsValidation {
           req.body.price - (req.body.price * val) / 100;
         return true;
       }),
-    param("category")
+    body("category")
       .isMongoId()
       .withMessage((val, { req }) => req.__("invalid_id"))
       .custom(async (val: string, { req }) => {
@@ -42,7 +42,7 @@ class ProductsValidation {
         if (!category) throw new Error(`${req.__("invalid_id")}`);
         return true;
       }),
-    param("subcategory")
+    body("subcategory")
       .isMongoId()
       .withMessage((val, { req }) => req.__("invalid_id"))
       .custom(async (val: string, { req }) => {
@@ -84,7 +84,7 @@ class ProductsValidation {
           req.body.price - (req.body.price * val) / 100;
         return true;
       }),
-    param("category")
+    body("category")
       .isMongoId()
       .withMessage((val, { req }) => req.__("invalid_id"))
       .custom(async (val: string, { req }) => {
@@ -92,7 +92,7 @@ class ProductsValidation {
         if (!category) throw new Error(`${req.__("invalid_id")}`);
         return true;
       }),
-    param("subcategory")
+    body("subcategory")
       .isMongoId()
       .withMessage((val, { req }) => req.__("invalid_id"))
       .custom(async (val: string, { req }) => {
@@ -108,12 +108,12 @@ class ProductsValidation {
   ];
 
   getOne = [
-    param("id").isMongoId().withMessage("Product Id is valid"),
+    param("id").isMongoId().withMessage((val, { req }) => req.__("invalid_id")),
     validatorMiddleware,
   ];
 
   deleteOne = [
-    param("id").isMongoId().withMessage("Product Id is valid"),
+    param("id").isMongoId().withMessage((val, { req }) => req.__("invalid_id")),
     validatorMiddleware,
   ];
 }

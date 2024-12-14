@@ -5,8 +5,16 @@ const productsSchema = new mongoose.Schema<Products>(
   {
     name: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
-    category: { type: mongoose.Schema.ObjectId, ref: "categories" },
-    subcategory: { type: mongoose.Schema.ObjectId, ref: "subcategories" },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "categories",
+      required: true,
+    },
+    subcategory: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "subcategories",
+      required: true,
+    },
     price: { type: Number, required: true },
     discount: { type: Number },
     priceAfterDiscount: { type: Number },
@@ -22,9 +30,19 @@ const productsSchema = new mongoose.Schema<Products>(
   }
 );
 
+const imagesUrl = (document: Products) => {
+  if (document.cover)
+    document.cover = `${process.env.BASE_URL}/images/products/${document.cover}`;
+  if (document.images)
+    document.images = document.images.map(
+      (image) => `${process.env.BASE_URL}/images/products/${image}`
+    );
+};
+
+productsSchema.post("init", imagesUrl).post("save", imagesUrl);
 
 productsSchema.pre<Products>(/^find/, function (next) {
-  this.populate({ path: "subcategory", select: "_id name img" });
+  this.populate({ path: "subcategory", select: "_id name" });
   next();
 });
 
