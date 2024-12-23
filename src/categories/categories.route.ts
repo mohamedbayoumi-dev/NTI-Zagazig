@@ -2,21 +2,41 @@ import { Router } from "express";
 import categoriesService from "./categories.service";
 import subcategoriesRouter from "../subcategories/subcategories.route";
 import categoriesValidation from "./categories.validation";
+import authService from "../auth/auth.service";
 
-const categoriesRouter:Router = Router()
-
+const categoriesRouter: Router = Router();
 
 // /api/v1/categories/categoryId                ====>   categories
 // /api/v1/categories/categoryId/subcategories  ====>   subcategories
 
-categoriesRouter.use('/:categoryId/subcategories' , subcategoriesRouter)
+categoriesRouter.use("/:categoryId/subcategories", subcategoriesRouter);
 
-categoriesRouter.route('/')
+categoriesRouter.route("/")
 .get(categoriesService.getAll)
-.post(categoriesValidation.createOne,categoriesService.createOne)
+.post(
+  authService.protectedRoutes,
+  authService.checkActive,
+  // add categories,subcategories,products
+  authService.allowedTo("admin", "employee"),
+  categoriesValidation.createOne,
+  categoriesService.createOne
+);
 
-categoriesRouter.route('/:id')
-.get(categoriesValidation.getOne,categoriesService.getOne)
-.put(categoriesValidation.updateOne,categoriesService.updateOne)
-.delete(categoriesValidation.deleteOne,categoriesService.deleteOne)
+categoriesRouter
+  .route("/:id")
+  .get(categoriesValidation.getOne, categoriesService.getOne)
+  .put(
+    authService.protectedRoutes,
+    authService.checkActive,
+    authService.allowedTo("admin", "employee"),
+    categoriesValidation.updateOne,
+    categoriesService.updateOne
+  )
+  .delete(
+    authService.protectedRoutes,
+    authService.checkActive,
+    authService.allowedTo("admin", "employee"),
+    categoriesValidation.deleteOne,
+    categoriesService.deleteOne
+  );
 export default categoriesRouter;

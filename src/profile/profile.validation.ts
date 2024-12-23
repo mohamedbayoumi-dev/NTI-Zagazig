@@ -1,34 +1,31 @@
-import { body } from "express-validator";
-import usersSchema from "../users/users.schema";
+import { body, param } from "express-validator";
+import bcrypt from "bcryptjs";
 import validatorMiddleware from "../middlewares/validator.middleware";
 
-class AuthValidation {
-  signup = [
-    body("username")
-      .notEmpty()
-      .withMessage((val, { req }) => req.__("validation_field"))
-      .isLength({ min: 2, max: 50 })
-      .withMessage((val, { req }) => req.__("validation_length_short"))
-      .custom(async (val: string, { req }) => {
-        const user = await usersSchema.findOne({ username: val });
-        if (user) throw new Error(`${req.__("validation_email_check")}`);
-        return true;
-      }),
-    body("email")
-      .notEmpty()
-      .withMessage((val, { req }) => req.__("validation_field"))
-      .isEmail()
-      .withMessage((val, { req }) => req.__("validation_value"))
-      .custom(async (val: string, { req }) => {
-        const user = await usersSchema.findOne({ email: val });
-        if (user) throw new Error(`${req.__("validation_email_check")}`);
-        return true;
-      }),
+class ProfileValidation {
+  updateOne = [
     body("name")
-      .notEmpty()
-      .withMessage((val, { req }) => req.__("validation_field"))
+      .optional()
       .isLength({ min: 2, max: 50 })
       .withMessage((val, { req }) => req.__("validation_length_short")),
+    validatorMiddleware,
+  ];
+
+  getOne = [
+    param("id")
+      .isMongoId()
+      .withMessage((val, { req }) => req.__("invalid_id")),
+    validatorMiddleware,
+  ];
+
+  deleteOne = [
+    param("id")
+      .isMongoId()
+      .withMessage((val, { req }) => req.__("invalid_id")),
+    validatorMiddleware,
+  ];
+
+  createPassword = [
     body("password")
       .notEmpty()
       .withMessage((val, { req }) => req.__("validation_field"))
@@ -47,28 +44,18 @@ class AuthValidation {
     validatorMiddleware,
   ];
 
-  login = [
-    body("username")
-      .notEmpty()
-      .withMessage((val, { req }) => req.__("validation_field")),
-    body("password")
+  changePassword = [
+    body("currentPassword")
       .notEmpty()
       .withMessage((val, { req }) => req.__("validation_field"))
       .isLength({ min: 6, max: 20 })
-      .withMessage((val, { req }) => req.__("validation_length_password")),
-    validatorMiddleware,
-  ];
-
-  forgetPassword = [
-    body("email")
-      .notEmpty()
-      .withMessage((val, { req }) => req.__("validation_field"))
-      .isEmail()
-      .withMessage((val, { req }) => req.__("validation_value")),
-    validatorMiddleware,
-  ];
-
-  changePassword = [
+      .withMessage((val, { req }) => req.__("validation_length_password"))
+      .custom(async (val: string, { req }) => {
+        const isValidPassword = await bcrypt.compare(val, req.user.password);
+        if (isValidPassword)
+          throw new Error(`${req.__("validation_password_match")}`);
+        return true;
+      }),
     body("password")
       .notEmpty()
       .withMessage((val, { req }) => req.__("validation_field"))
@@ -88,5 +75,5 @@ class AuthValidation {
   ];
 }
 
-const authValidation = new AuthValidation();
-export default authValidation;
+const profileValidation = new ProfileValidation();
+export default profileValidation;

@@ -16,6 +16,13 @@ const usersSchema = new mongoose.Schema<Users>(
     active: { type: Boolean, default: true },
     googleId: { type: String },
     hasPassword: { type: Boolean, default: true },
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }],
+    address: [{
+      address: String,
+      city: String,
+      state: String,
+      zip: String,
+  }],
     passwordChangedAt: Date,
     passwordResetCode: String,
     passwordResetCodeExpires: Date,
