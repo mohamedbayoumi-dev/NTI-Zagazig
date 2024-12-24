@@ -5,7 +5,7 @@ const subcategoriesSchema = new mongoose.Schema<Subcategories>(
   {
     name: { type: String, required: true, trim: true },
     description: { type: String, trim: true },
-    category: { type: mongoose.Schema.Types.ObjectId, ref:'categories' },
+    category: { type: mongoose.Schema.Types.ObjectId, ref:'categories' ,required: true},
     img: { type: String },
   },
   {
@@ -18,7 +18,5 @@ subcategoriesSchema.pre<Subcategories>(/^find/, function (next) {
   next();
 });
 
-export default mongoose.model<Subcategories>(
-  "subcategories",
-  subcategoriesSchema
-);
+export default mongoose.model<Subcategories>( "subcategories",subcategoriesSchema);
+ 
