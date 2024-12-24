@@ -2,8 +2,11 @@ import { Router, Request, Response, NextFunction } from "express";
 import productsService from "./products.service";
 import productsValidation from "./products.validation";
 import authService from "../auth/auth.service";
+import reviewsRouter from "../reviews/reviews.route";
 
 const productsRoute: Router = Router();
+
+productsRoute.use('/:productId/reviews', reviewsRouter);
 
 productsRoute
   .route("/")

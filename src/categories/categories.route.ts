@@ -16,7 +16,6 @@ categoriesRouter.route("/")
 .post(
   authService.protectedRoutes,
   authService.checkActive,
-  // add categories,subcategories,products
   authService.allowedTo("admin", "employee"),
   categoriesValidation.createOne,
   categoriesService.createOne

@@ -26,9 +26,17 @@ const productsSchema = new mongoose.Schema<Products>(
     images: [String],
   },
   {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
     timestamps: true,
   }
 );
+
+productsSchema.virtual("reviews", {
+  localField: "_id",
+  foreignField: "product",
+  ref: "reviews",
+});
 
 const imagesUrl = (document: Products) => {
   if (document.cover)

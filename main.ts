@@ -6,26 +6,32 @@ import path from "path";
 import dotenv from "dotenv";
 import i18n from "i18n";
 import mountRoutes from "./src";
-import cookieParser from 'cookie-parser'
-import cors from 'cors'
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import compression from 'compression';
+import helmet from 'helmet';
+import expressMongoSanitize from "express-mongo-sanitize";
 
 const app: express.Application = express();
-app.use(cors({
-  origin: ['http://localhost:4200'],
-  allowedHeaders: ['X-CSRF-Token', 'Content-Type', 'Authorization'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true,
-}));
-app.use(cookieParser());
-
+app.use(
+  cors({
+    origin: ["http://localhost:4200"],
+    allowedHeaders: ["X-CSRF-Token", "Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "10kb" }));
-app.use(express.static('uploads'))
-// hpp()                         // one result
-// hpp({whitelist:['','']})     // more result
-app.use(hpp({ whitelist: ["name"]}));
-
+app.use(expressMongoSanitize());
+app.use(helmet({crossOriginResourcePolicy: {policy: 'same-site'}}));
+app.use(compression());
+app.use(cookieParser());
 let server: Server;
 dotenv.config();
+app.use(express.static("uploads"));
+// hpp()                         // one result
+// hpp({whitelist:['','']})     // more result
+app.use(hpp({ whitelist: ["price"] }));
 i18n.configure({
   locales: ["en", "ar"],
   directory: path.join(__dirname, "locales"),

@@ -129,8 +129,8 @@ class AuthService {
       if (user.image && user.image.startsWith(`${process.env.BASE_URL}`))
         user.image = user.image.split("/").pop();
       await user.save({ validateModifiedOnly: true });
-      
-      res.status(200).json({token, success: true });
+
+      res.status(200).json({ token, success: true });
     }
   );
 
@@ -158,7 +158,7 @@ class AuthService {
       user.passwordResetCode = undefined;
       user.passwordResetCodeVerify = undefined;
       user.passwordChangedAt = Date.now();
-      
+
       if (user.image && user.image.startsWith(`${process.env.BASE_URL}`))
         user.image = user.image.split("/").pop();
       await user.save({ validateModifiedOnly: true });
@@ -211,17 +211,13 @@ class AuthService {
   );
 
   // allowedTo          roles => ['admin','employee','user']
-  allowedTo = (...roles: string[]) => {
-    return asyncHandler(
-      async (req: Request, res: Response, next: NextFunction) => {
-        // => route ['admin','employee']
-        if (!roles.includes(req.user?.role)) {
-          return next(new ApiErrors(`${req.__("allowed_to")}`, 403));
-        }
-        next();
-      }
-    );
-  };
+  allowedTo = (...roles: string[]) =>
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+      // => route ['admin','employee']
+      if (!roles.includes(req.user.role))
+        return next(new ApiErrors(`${req.__("allowed_to")}`, 403));
+      next();
+    });
 }
 
 const authService = new AuthService();

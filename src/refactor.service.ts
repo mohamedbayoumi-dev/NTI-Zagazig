@@ -38,17 +38,23 @@ class RefactorService {
       res.status(201).json({ data: documents });
     });
 
-  getOne = <modelType>(model: mongoose.Model<any>) =>
+  getOne = <modelType>(
+    model: mongoose.Model<any>,
+    modelName?: string,
+    populationOptions?: string
+  ) =>
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-      const documents: modelType | null = await model.findById(req.params.id);
+      let query: any = model.findById(req.params.id);
+      if (populationOptions) query = query.populate(populationOptions);
+      let documents: any = await query;
       if (!documents) return next(new ApiErrors(`${req.__("not_found")}`, 400));
       res.status(200).json({ data: documents });
     });
 
   updateOne = <modelType>(model: mongoose.Model<any>) =>
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-      const documents: modelType | null = await model.findByIdAndUpdate(
-        req.params.id,
+      const documents: modelType | null = await model.findOneAndUpdate(
+        { _id: req.params.id },
         req.body,
         { new: true }
       );

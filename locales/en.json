@@ -27,5 +27,6 @@
 	"check_active": "Your account is deactivated",
 	"allowed_to": "Privilege denied! You cannot perform this action",
 	"Invalid or expired reset token": "Invalid or expired reset token",
-	"Authorization token missing": "Authorization token missing"
+	"Authorization token missing": "Authorization token missing",
+	"not_allowed": "not_allowed"
 }
