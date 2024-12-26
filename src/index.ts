@@ -26,7 +26,7 @@ declare module "express" {
   }
 }
 
-const mountRoutes = (app: Application) => {
+export const mountRoutes = (app: Application) => {
 
   // ****************************   payment  ***************
   app.post(

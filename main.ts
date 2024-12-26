@@ -5,12 +5,12 @@ import hpp from "hpp";
 import path from "path";
 import dotenv from "dotenv";
 import i18n from "i18n";
-import mountRoutes from "./src";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import compression from 'compression';
 import helmet from 'helmet';
 import expressMongoSanitize from "express-mongo-sanitize";
+import mountRoutes from "./src/index";
 
 const app: express.Application = express();
 app.use(
